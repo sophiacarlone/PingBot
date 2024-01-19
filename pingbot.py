@@ -28,5 +28,6 @@ async def on_ready():
     print(f'We have logged in as {client.user}')
     pinging()
 
-f = ("token.txt", "r")
-client.run(f.readline()) 
+f = open("token.txt", "r")
+token = f.readline().strip('\n')
+client.run(token) 
