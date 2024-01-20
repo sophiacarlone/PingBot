@@ -1,4 +1,5 @@
-# This example requires the 'message_content' intent.
+#Sophia Carlone 1/19/24
+#Bot for COSI server management
 
 from discord.ext import tasks
 import discord
@@ -11,18 +12,45 @@ client = discord.Client(intents=intents)
 
 @tasks.loop(minutes=10.0)  # 10 minutes
 async def pinging():
-    #TODO: have dns its own special thing
     #TODO: all the servers
-    hostname = "google.com" #example
-    response = os.system("ping -c 1 " + hostname)
-    if response == 0:
-        print("still running")
-    if response != 0:
-        print(f"{hostname} is down!")
-        warning = (f"{hostname} is down!")
-        
+    dns = False
+    #try dns first
+    with open("dns_server_name.txt", "r") as f:
+        for line in f:
+            hostname = line.strip('\n')
+            response = os.system("ping -c 1 " + hostname)
+            
+            if response == 0:
+                print("still running")
+                dns = True
+                for guild in client.guilds:
+                    await guild.system_channel.send("everything is running smoothly")
+            
+            if response != 0:
+                print(f"{hostname} is down!")
+                warning = (f"{hostname} is down!")
+                
+                for guild in client.guilds:
+                    await guild.system_channel.send(warning)
+    f.close()
+                
+    if(not dns):
         for guild in client.guilds:
-            await guild.system_channel.send(warning)
+            await guild.system_channel.send("May be a dns issue. Trying IP addressess now")
+            
+        with open("ip_server_name", "r") as f:
+            for line in f:
+                hostname = line.strip('\n')
+                response = os.system("ping -c 1 " + hostname)
+            
+                if response != 0:
+                    print(f"{hostname} is down!")
+                    warning = (f"{hostname} is down!")
+                
+                    for guild in client.guilds:
+                        await guild.system_channel.send(warning)
+    f.close()
+            
  
 @client.event
 async def on_ready():
