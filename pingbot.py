@@ -1,7 +1,7 @@
 #Sophia Carlone 1/19/24
 #Bot for COSI server management
 
-from discord.ext import tasks
+from discord.ext import tasks #will allow the bot to check every X minutes
 import discord
 import os
 
@@ -13,24 +13,21 @@ client = discord.Client(intents=intents)
 @tasks.loop(minutes=10.0)  # 10 minutes
 async def pinging():
     dns = False
+    
     #try dns first
     with open("dns_server_name.txt", "r") as f:
         for line in f:
             hostname = line.strip('\n')
-            response = os.system("ping -c 1 " + hostname)
+            response = os.system("ping -c 1 " + hostname) #the -c 1 means that you are only sending one packet
             
             if response == 0:
-                # print("still running")
-                dns = True
-                # for guild in client.guilds:
-                #     await guild.system_channel.send("everything is running smoothly")
+                dns = True #dns is seemingly working
             
-            if response != 0:
-                # print(f"{hostname} is down!")
-                warning = (f"{hostname} is down!")
-                
+            else:
+                warning = (f"{hostname} is down!")            
                 for guild in client.guilds:
                     await guild.system_channel.send(warning)
+                    
     f.close()
                 
     if(not dns):
@@ -42,16 +39,16 @@ async def pinging():
                 hostname = line.strip('\n')
                 response = os.system("ping -c 1 " + hostname)
                 
+                #could use a try catch, but nah
                 if response == 0:
                     for guild in client.guilds:
                         await guild.system_channel.send(f"{hostname} ip worked.")
             
-                if response != 0:
-                    # print(f"{hostname} is down!")
+                else:
                     warning = (f"{hostname} is down!")
-                
                     for guild in client.guilds:
                         await guild.system_channel.send(warning)
+                        
     f.close()
             
  
