@@ -12,7 +12,6 @@ client = discord.Client(intents=intents)
 
 @tasks.loop(minutes=10.0)  # 10 minutes
 async def pinging():
-    #TODO: all the servers
     dns = False
     #try dns first
     with open("dns_server_name.txt", "r") as f:
@@ -21,13 +20,13 @@ async def pinging():
             response = os.system("ping -c 1 " + hostname)
             
             if response == 0:
-                print("still running")
+                # print("still running")
                 dns = True
-                for guild in client.guilds:
-                    await guild.system_channel.send("everything is running smoothly")
+                # for guild in client.guilds:
+                #     await guild.system_channel.send("everything is running smoothly")
             
             if response != 0:
-                print(f"{hostname} is down!")
+                # print(f"{hostname} is down!")
                 warning = (f"{hostname} is down!")
                 
                 for guild in client.guilds:
@@ -42,9 +41,13 @@ async def pinging():
             for line in f:
                 hostname = line.strip('\n')
                 response = os.system("ping -c 1 " + hostname)
+                
+                if response == 0:
+                    for guild in client.guilds:
+                        await guild.system_channel.send(f"{hostname} ip worked.")
             
                 if response != 0:
-                    print(f"{hostname} is down!")
+                    # print(f"{hostname} is down!")
                     warning = (f"{hostname} is down!")
                 
                     for guild in client.guilds:
@@ -54,7 +57,7 @@ async def pinging():
  
 @client.event
 async def on_ready():
-    print(f'We have logged in as {client.user}')
+    # print(f'We have logged in as {client.user}')
     pinging.start()
 
 f = open("token.txt", "r")
