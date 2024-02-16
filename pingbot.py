@@ -5,6 +5,8 @@ from discord.ext import tasks #will allow the bot to check every X minutes
 import discord
 import os
 
+DNS_IP = "128.153.145.53"
+
 #setting up discord client
 intents = discord.Intents.default()
 intents.message_content = True
@@ -16,27 +18,12 @@ async def pinging():
     channel = client.get_channel(783047906550218792)  # sys-admin channel         
     
     #try dns first
-    with open("dns_server_name.txt", "r") as f:
-        for line in f:
-            hostname = line.strip('\n')
-            response = os.system("ping -c 1 " + hostname) #the -c 1 means that you are only sending one packet
-            
-            if response == 0:
-                dns = True #dns is seemingly working
-            
-            else:
-                warning = (f"{hostname} is down!") 
-                await channel.send(warning)
-                    
-    f.close()
-     
-     #no dns entry worked           
-    if(not dns): 
-        await channel.send("May be a dns issue. Trying IP addresses now")
-            
-        with open("ip_server_name", "r") as f:
+    response = os.system(DNS_IP);
+    if response != 0:
+        warning = " DNS is down!"
+        #if DNS is down, try the ip addresses
+        with open("ip_server_name", "r") as f: #line with all ip addresses (could make a webhook later to automatically pull from zones)
             for line in f:
-                print("hit")
                 hostname = line.strip('\n')
                 response = os.system("ping -c 1 " + hostname)
                 
@@ -47,10 +34,23 @@ async def pinging():
                 else:
                     warning = (f"{hostname} is down!")
                     await channel.send(warning)
-                        
-    f.close()
-            
- 
+        f.close() 
+        
+    #dns is up, so try those entries
+    else:                
+        with open("dns_server_name.txt", "r") as f:
+            for line in f:
+                hostname = line.strip('\n')
+                response = os.system("ping -c 1 " + hostname) #the -c 1 means that you are only sending one packet
+                
+                if response == 0:
+                    dns = True #dns is seemingly working
+                
+                else:
+                    warning = (f"{hostname} is down!") 
+                    await channel.send(warning)                
+            f.close()
+     
 @client.event
 async def on_ready():
     # print(f'We have logged in as {client.user}')
