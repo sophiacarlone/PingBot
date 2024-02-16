@@ -15,7 +15,7 @@ client = discord.Client(intents=intents)
 @tasks.loop(minutes=10.0)  # 10 minutes
 async def pinging():
     dns = False
-    channel = client.get_channel(783047906550218792)  # sys-admin channel         
+    channel = client.get_channel(1033616359235538987)  # sys-admin channel         
     
     #try dns first
     response = os.system(DNS_IP);
