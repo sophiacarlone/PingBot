@@ -20,7 +20,7 @@ client = discord.Client(intents=intents)
 async def pinging():
     channel = client.get_channel(CHANNEL)           
     
-    #try dns first so that you go straight to IPS
+    #try DNS server first
     response = os.system("ping -c 1 " + DNS_IP)
     if response != 0:
         warning = " DNS is down!"
@@ -31,7 +31,7 @@ async def pinging():
             with open("ip_server_name.txt", "r") as f:
                 for line in f:
                     hostname = line.strip('\n')
-                    response = os.system("ping -c 1 " + hostname)
+                    response = os.system("ping -c 1 " + hostname) #`-c 1` means send one packet
                         
                     if response != 0:
                         warning = (f"{hostname} is down!")
@@ -44,22 +44,22 @@ async def pinging():
 
         f.close() 
         
-    #dns is up, so use domain names (more helpful for those who are unfamiliar which server has which ip address)
+    #DNS server is up: use domain names (more helpful for those unfamiliar of ip address allocation in COSI)
     else:
         try:                
             with open("dns_server_name.txt", "r") as f:
                 for line in f:
                     hostname = line.strip('\n')
-                    response = os.system("ping -c 1 " + hostname) #the -c 1 means that you are only sending one packet
+                    response = os.system("ping -c 1 " + hostname) 
                     
                     if response != 0:
                         warning = (f"{hostname} is down!") 
                         await channel.send(warning)                
         
         except FileNotFoundError:
-            print("File 'ip_server_name.txt' not found.")
+            print("File 'dns_server_name.txt' not found.")
         except Exception as e:
-            print(f"Error occurred while reading 'ip_server_name.txt': {e}")
+            print(f"Error occurred while reading 'dns_server_name.txt': {e}")
         
         f.close()
     
@@ -73,3 +73,7 @@ async def on_ready():
 f = open("token.txt", "r")
 token = f.readline().strip('\n')
 client.run(token) 
+
+# Suggestions:
+# Control which servers Pingbot pings by adding them into dns_server_name.txt and ip_server_name.txt
+# Possibility of using and parsing information from Zones repo, but clean up in the repo should be done first

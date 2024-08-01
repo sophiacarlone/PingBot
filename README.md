@@ -1,6 +1,6 @@
 # PingBot
 
-First discord bot to ping COSI servers. Will let me know if something goes down. 
+First discord bot to ping COSI servers 
 
 ## Dependencies and what-not
 - Create and enter python venv
@@ -8,7 +8,7 @@ First discord bot to ping COSI servers. Will let me know if something goes down.
 python<version> -m venv <name of virtual env>
 source <name of virutal env>/bin/activate
 ```
-- needs discord module
+- Install discord module via pip3
 ```
 pip3 install discord
 ```
