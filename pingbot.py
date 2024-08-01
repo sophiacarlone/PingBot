@@ -1,8 +1,10 @@
 #Sophia Carlone 1/19/24
 #Bot for COSI server management
 
-from discord.ext import tasks #will allow the bot to check every X minutes
 import discord
+from discord.ext import tasks #will allow the bot to check every X minutes
+from discord.ext import commands
+# from discord import app_commands
 import os
 
 DNS_IP = "128.153.145.53"
@@ -14,6 +16,20 @@ intents = discord.Intents.default()
 intents.message_content = True
 client = discord.Client(intents=intents)
 
+bot = commands.Bot(command_prefix = '$', intents = intents)
+@bot.command()
+async def test(ctx, arg):
+    print("hit\n")
+    await ctx.send("hi")
+
+
+# tree = app_commands.CommandTree(client)
+# client.tree = tree
+
+# tree.command(name="echo", description="Echoes a message.")
+# @app_commands.describe(message="The message to echo.")
+# async def echo(interaction: discord.Interaction, message: str) -> None:
+#     await interaction.response.send_message("thanks")
 
 #ping tests (aka the BEEF of the code)
 @tasks.loop(minutes = MINUTES)  
@@ -70,7 +86,7 @@ async def on_ready():
     # print(f'We have logged in as {client.user}')
     pinging.start()
 
-f = open("token.txt", "r")
+f = open("token.txt", "r") # token can be manually inserted as `TOKEN = <number>` 
 token = f.readline().strip('\n')
 client.run(token) 
 
