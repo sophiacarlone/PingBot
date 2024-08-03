@@ -16,24 +16,10 @@ intents = discord.Intents.default()
 intents.message_content = True
 client = discord.Client(intents=intents)
 
-bot = commands.Bot(command_prefix = '$', intents = intents)
-@bot.command()
-async def test(ctx, arg):
-    print("hit\n")
-    await ctx.send("hi")
-
-
-# tree = app_commands.CommandTree(client)
-# client.tree = tree
-
-# tree.command(name="echo", description="Echoes a message.")
-# @app_commands.describe(message="The message to echo.")
-# async def echo(interaction: discord.Interaction, message: str) -> None:
-#     await interaction.response.send_message("thanks")
 
 #ping tests (aka the BEEF of the code)
 @tasks.loop(minutes = MINUTES)  
-async def pinging():
+async def Pinging():
     channel = client.get_channel(CHANNEL)           
     
     #try DNS server first
@@ -78,13 +64,18 @@ async def pinging():
             print(f"Error occurred while reading 'dns_server_name.txt': {e}")
         
         f.close()
+        
+
+def CommandListening():
+    print("hit\n")
     
     
-#start of bot 
+    
 @client.event
-async def on_ready():
+async def on_ready(): #start of bot 
     # print(f'We have logged in as {client.user}')
-    pinging.start()
+    Pinging.start()
+    CommandListening()
 
 f = open("token.txt", "r") # token can be manually inserted as `TOKEN = <number>` 
 token = f.readline().strip('\n')
@@ -93,3 +84,21 @@ client.run(token)
 # Suggestions:
 # Control which servers Pingbot pings by adding them into dns_server_name.txt and ip_server_name.txt
 # Possibility of using and parsing information from Zones repo, but clean up in the repo should be done first
+
+
+
+############GARBAGE#############
+# bot = commands.Bot(command_prefix = '$', intents = intents)
+# @bot.command()
+# async def test(ctx, arg):
+#     print("hit\n")
+#     await ctx.send("hi")
+
+
+# tree = app_commands.CommandTree(client)
+# client.tree = tree
+
+# tree.command(name="echo", description="Echoes a message.")
+# @app_commands.describe(message="The message to echo.")
+# async def echo(interaction: discord.Interaction, message: str) -> None:
+#     await interaction.response.send_message("thanks")
